@@ -1,0 +1,15 @@
+.idea/
+*.keystore
+*.sw*
+.DS_Store
+._*
+Thumbs.db
+.cache
+*.sublime-project
+*.sublime-workspace
+TODO.md
+.sass-cache
+node_modules
+bower_components
+build
+/tmp
