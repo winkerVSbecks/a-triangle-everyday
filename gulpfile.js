@@ -10,7 +10,8 @@ var triangles = {
   tada: 'ta-da-triangle',
   splat: 'splat-triangle',
   svg: 'svg-triangle',
-  svgPulse: 'svg-triangle-pulse'
+  pulse: 'svg-triangle-pulse',
+  lazer: 'svg-triangle-pulse-lazer'
 };
 
 gulp.task('dev', function() {
