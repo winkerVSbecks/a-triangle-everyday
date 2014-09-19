@@ -23,7 +23,6 @@ var makeTrianlge = function(svg, s, grad, id) {
 
   var poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
   poly.setAttribute('id', id);
-  console.log(poly)
   poly.setAttribute('points', points);
   poly.setAttribute('fill', 'url(#' + grad + ')');
   svg.appendChild(poly);
