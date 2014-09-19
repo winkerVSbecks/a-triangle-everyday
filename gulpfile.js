@@ -11,7 +11,8 @@ var triangles = {
   splat: 'splat-triangle',
   svg: 'svg-triangle',
   pulse: 'svg-triangle-pulse',
-  lazer: 'svg-triangle-pulse-lazer'
+  lazer: 'svg-triangle-pulse-lazer',
+  pyramid: 'triangle-which-is-really-a-pyramid'
 };
 
 gulp.task('dev', function() {
