@@ -13,7 +13,8 @@ var triangles = {
   pulse    : 'svg-triangle-pulse',
   lazer    : 'svg-triangle-pulse-lazer',
   pyramid  : 'triangle-which-is-really-a-pyramid',
-  what     : 'what-is-a-triangle'
+  what     : 'what-is-a-triangle',
+  centroid : 'the-centroid'
 };
 
 gulp.task('dev', function() {
