@@ -107,13 +107,8 @@ Triangle.prototype.update = function(time) {
     this.bisectors[2].draw();
   if (this.counter >= 280)
     this.bisectors[2].draw();
-  if (this.counter >= 400)
+  if (this.counter >= 600)
     this.reset();
-
-    // this.bisect(this.pts[0], this.pts[2], 0);
-    // this.bisect(this.pts[2], this.pts[1], 1);
-    // this.bisect(this.pts[1], this.pts[0], 2);
-
   // else if (this.counter >= 205)
   //   this.drawCircumcenter();
   this.counter++;
@@ -123,7 +118,7 @@ Triangle.prototype.sideVector = function(vectorStart, e, coord_label, coord_offs
   var vector = e.subtract(vectorStart);
   var end = vectorStart.add(vector);
   // Draw Side
-  var path = this.animateLine(vectorStart, end, this.s_now, i);
+  var path = this.animateSide(vectorStart, end, this.s_now, i);
       path.strokeWidth = 1;
       path.selected = true;
       path.selectedColor = blue;
@@ -134,17 +129,9 @@ Triangle.prototype.sideVector = function(vectorStart, e, coord_label, coord_offs
       text.justification = 'center';
 };
 
-Triangle.prototype.bisect = function(u, v, i) {
-  var path = this.animateLine(u, v, this.b_now, i);
-      path.rotate(30, u);
-      // path.rotate(180, v);
-      path.strokeWidth = 1;
-      path.strokeColor = red;
-};
-
-Triangle.prototype.animateLine = function(u, v, now, i) {
+Triangle.prototype.animateSide = function(u, v, now, i) {
   var delta = v.subtract(now[i]);
-  now[i] = now[i].add(delta.divide(30));
+  now[i] = now[i].add(delta.divide(20));
   return new Path([u, now[i]]);
 };
 
@@ -182,26 +169,44 @@ Bisector.prototype.reset = function() {
   for (var i = this.arcs.length - 1; i >= 0; i--) {
     this.arcs[i].reset();
   };
+  this.animatedLine && this.animatedLine.reset();
 };
 
 Bisector.prototype.draw = function() {
   this.arcs[0].draw();
   if (this.arcs[0].drawComplete) {
     this.arcs[1].draw();
-    this.showIntersections();
+    // Get the intersection points of the two curves
+    if (this.intersections.length < 2)
+      this.intersections = this.getIntersections();
+    // If there are 2 intersections, draw a line between them
+    else if (!this.animatedLine)
+      this.animatedLine = new AnimatedLine(this.intersections[0].point, this.intersections[1].point, 3);
+    // The animated line is defined, draw it
+    if (this.animatedLine) {
+      var path = this.animatedLine.draw();
+      // path.rotate(30, u);
+      // path.rotate(180, v);
+      path.strokeWidth = 1;
+      path.strokeColor = red;
+    }
+    // Draw the intersection points
+    this.drawIntersections();
   }
 };
 
-Bisector.prototype.showIntersections = function() {
-  if (this.arcs[0].path && this.arcs[1].path) {
-    this.intersections = this.arcs[0].path.getIntersections(this.arcs[1].path);
-    for (var i = 0; i < this.intersections.length; i++) {
-      new Path.Circle({
-        center: this.intersections[i].point,
-        radius: 2,
-        strokeColor: green
-      });
-    }
+Bisector.prototype.getIntersections = function() {
+  return this.arcs[0].path.getIntersections(this.arcs[1].path);
+};
+
+Bisector.prototype.drawIntersections = function() {
+  for (var i = 0; i < this.intersections.length; i++) {
+    new Path.Circle({
+      center: this.intersections[i].point,
+      radius: 2,
+      strokeColor: green,
+      fillColor: '#fff'
+    });
   }
 };
 
@@ -248,7 +253,37 @@ Arc.prototype.draw = function() {
     strokeColor: lightRed
   });
   if (angle < end)
-    this.arcSpan += Math.abs(this.end - this.start)/10;
+    this.arcSpan += Math.abs(this.end - this.start)/5;
   if(Math.abs(angle - end) < 1)
     this.drawComplete = true;
+};
+
+
+
+// ---------------------------------------------------
+//  AnimatedLine
+// ---------------------------------------------------
+var AnimatedLine = function(u, v, decc) {
+  this.u = u;
+  this.v = v;
+  this.now = u;
+  this.decc = decc;
+};
+
+// AnimatedLine.prototype.bisect = function(u, v, i) {
+//   var path = this.animateLine(u, v, this.b_now, i);
+//       path.rotate(30, u);
+//       // path.rotate(180, v);
+//       path.strokeWidth = 1;
+//       path.strokeColor = red;
+// };
+
+AnimatedLine.prototype.reset = function() {
+  this.now = this.u;
+};
+
+AnimatedLine.prototype.draw = function() {
+  var delta = this.v.subtract(this.now);
+  this.now = this.now.add(delta.divide(this.decc));
+  return new Path([this.u, this.now]);
 };
