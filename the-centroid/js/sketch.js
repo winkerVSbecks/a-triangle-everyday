@@ -7,7 +7,7 @@ var blue = '#89C2EF';
 var triangle;
 
 window.onload = function() {
-  paper.setup('what-is-a-triangle');
+  paper.setup('what-is-a-centroid');
   triangle = new Triangle(Math.max(200, Math.min(paper.view.size.width, paper.view.size.height) - 400), event.time);
   paper.view.draw();
 
@@ -70,7 +70,7 @@ Triangle.prototype.update = function(time) {
     this.bisect(this.pts[1], this.pts[0], 2);
   }
   // Animation Timeline
-  if (this.counter >= 800)
+  if (this.counter >= 600)
     this.reset();
   else if (this.counter >= 205)
     this.drawCentroid();

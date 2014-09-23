@@ -5,16 +5,17 @@ var watch = require('gulp-watch');
 var argv = require('yargs').argv;
 
 var triangles = {
-  field    : 'triangle-in-a-gradient-field',
-  lerp     : 'lerping-triangle',
-  tada     : 'ta-da-triangle',
-  splat    : 'splat-triangle',
-  svg      : 'svg-triangle',
-  pulse    : 'svg-triangle-pulse',
-  lazer    : 'svg-triangle-pulse-lazer',
-  pyramid  : 'triangle-which-is-really-a-pyramid',
-  what     : 'what-is-a-triangle',
-  centroid : 'the-centroid'
+  field         : 'triangle-in-a-gradient-field',
+  lerp          : 'lerping-triangle',
+  tada          : 'ta-da-triangle',
+  splat         : 'splat-triangle',
+  svg           : 'svg-triangle',
+  pulse         : 'svg-triangle-pulse',
+  lazer         : 'svg-triangle-pulse-lazer',
+  pyramid       : 'triangle-which-is-really-a-pyramid',
+  what          : 'what-is-a-triangle',
+  centroid      : 'the-centroid',
+  circumcenter  : 'the-circumcenter'
 };
 
 gulp.task('dev', function() {
