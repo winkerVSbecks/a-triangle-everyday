@@ -5,6 +5,7 @@ var lightRed = '#FDE6E0';
 var grey = '#8A90A4';
 var blue = '#89C2EF';
 var green = '#95D9AD';
+var lightGrey = '#969CAE';
 var triangle;
 
 var randomNumber = function(minimum, maximum) {
@@ -13,7 +14,7 @@ var randomNumber = function(minimum, maximum) {
 
 window.onload = function() {
   paper.setup('what-is-a-circumcenter');
-  triangle = new Triangle(Math.max(200, Math.min(paper.view.size.width, paper.view.size.height) - 400), event.time);
+  triangle = new Triangle(calcA());
   paper.view.draw();
 
   paper.view.onFrame = function (event) {
@@ -24,7 +25,12 @@ window.onload = function() {
 
 window.onresize = function() {
   project.clear();
-  triangle.resize(Math.max(200, Math.min(paper.view.size.width, paper.view.size.height) - 400));
+  console.log(calcA());
+  triangle.resize(calcA());
+};
+
+var calcA = function() {
+  return Math.max(250, Math.min(paper.view.size.width, paper.view.size.height) - 400);
 };
 
 
@@ -33,16 +39,15 @@ window.onresize = function() {
 //  Triangle
 // ---------------------------------------------------
 var Triangle = function(a) {
-  var center = new Path.Circle(new Point(paper.view.center), 0.5 );
+  var center = new Path.Circle(new Point(paper.view.center), 0.5);
       center.strokeColor = red;
   var centerLabel = new PointText(paper.view.center.x, paper.view.center.y + 15);
       centerLabel.content = '(0,0)';
       centerLabel.fillColor = grey;
       centerLabel.justification = 'center';
-  this.a = a;
   this.resize(a);
+  this.a = a;
   this.counter = 0;
-  this.arcs = [];
 };
 
 Triangle.prototype.resize = function(a) {
@@ -58,25 +63,9 @@ Triangle.prototype.resize = function(a) {
   this.labels = ['(0, -a/√3)',
                  '(-a/2, /2√3)',
                  '(a/2, a/2√3)'];
-  // Bisecting arcs and lines
-  this.bisectors = [];
-  this.buildBisectors();
-  this.reset();
-};
-
-Triangle.prototype.buildBisectors = function() {
-  for (var i = 0; i < 3; i++) {
-    this.bisectors.push(new Bisector());
-  };
-  var a1 = this.a * randomNumber(0.51, 0.55);
-  var a2 = this.a * randomNumber(0.51, 0.55);
-  var a3 = this.a * randomNumber(0.51, 0.55);
-  this.bisectors[0].addArc(this.pts[0], this.pts[2].subtract(this.pts[0]).angle, -27, 27, a1);
-  this.bisectors[0].addArc(this.pts[2], this.pts[0].subtract(this.pts[2]).angle, -27, 27, a1);
-  this.bisectors[1].addArc(this.pts[2], this.pts[1].subtract(this.pts[2]).angle, -27, 27, a2);
-  this.bisectors[1].addArc(this.pts[1], this.pts[2].subtract(this.pts[1]).angle, -27, 27, a2);
-  this.bisectors[2].addArc(this.pts[1], this.pts[0].subtract(this.pts[1]).angle, -27, 27, a3);
-  this.bisectors[2].addArc(this.pts[0], this.pts[1].subtract(this.pts[0]).angle, -27, 27, a3);
+  this.AnimatedCircle = new AnimatedCircle(new Point(x_off, y_off),
+                                                     a / SQRT_3);
+  this.reset(a);
 };
 
 Triangle.prototype.reset = function(a) {
@@ -84,9 +73,25 @@ Triangle.prototype.reset = function(a) {
   this.s_now = [this.pts[0], this.pts[2], this.pts[1]];
   this.b_now = [this.pts[0], this.pts[2], this.pts[1]];
   this.counter = 0;
-  for (var i = 0; i < 3; i++) {
-    this.bisectors[i].reset();
+  this.AnimatedCircle.reset();
+  // Bisecting arcs and lines
+  this.bisectors = [];
+  this.buildBisectors(a);
+};
+
+Triangle.prototype.buildBisectors = function(a) {
+  for (var i = 0; i < 2; i++) {
+    this.bisectors.push(new Bisector(i===2 ? true : false));
   };
+  var a1 = a * randomNumber(0.51, 0.55);
+  var a2 = a * randomNumber(0.51, 0.55);
+  var a3 = a * randomNumber(0.51, 0.55);
+  this.bisectors[0].addArc(this.pts[0], this.pts[2].subtract(this.pts[0]).angle, -27, 27, a1);
+  this.bisectors[0].addArc(this.pts[2], this.pts[0].subtract(this.pts[2]).angle, -27, 27, a1);
+  this.bisectors[1].addArc(this.pts[1], this.pts[0].subtract(this.pts[1]).angle, -27, 27, a3);
+  this.bisectors[1].addArc(this.pts[0], this.pts[1].subtract(this.pts[0]).angle, -27, 27, a3);
+  // this.bisectors[2].addArc(this.pts[2], this.pts[1].subtract(this.pts[2]).angle, -27, 27, a2);
+  // this.bisectors[2].addArc(this.pts[1], this.pts[2].subtract(this.pts[1]).angle, -27, 27, a2);
 };
 
 Triangle.prototype.update = function(time) {
@@ -97,20 +102,16 @@ Triangle.prototype.update = function(time) {
   // Animation Timeline
   if (this.counter >= 180)
     this.bisectors[0].draw();
-  if (this.counter >= 200)
-    this.bisectors[0].draw();
   if (this.counter >= 220)
     this.bisectors[1].draw();
-  if (this.counter >= 240)
-    this.bisectors[1].draw();
+  if (this.counter >= 255)
+    this.drawCircumcenter();
   if (this.counter >= 260)
-    this.bisectors[2].draw();
-  if (this.counter >= 280)
-    this.bisectors[2].draw();
-  if (this.counter >= 600)
-    this.reset();
-  // else if (this.counter >= 205)
-  //   this.drawCircumcenter();
+    this.AnimatedCircle.draw();
+  // if (this.counter >= 300)
+  //   this.AnimatedCircle.draw();
+  if (this.counter >= 500)
+    this.reset(this.a);
   this.counter++;
 };
 
@@ -141,7 +142,7 @@ Triangle.prototype.drawCircumcenter = function() {
       rectangle.fillColor = '#fff';
       rectangle.position = this.circumcenter;
   // Label BG
-  var rectangle = new Path.Rectangle(this.circumcenter, [100, 40]);
+  var rectangle = new Path.Rectangle(this.circumcenter, [150, 40]);
       rectangle.fillColor = '#fff';
       rectangle.position = new Point(this.circumcenter.x, this.circumcenter.y + 30);
   // Draw Label
@@ -156,9 +157,11 @@ Triangle.prototype.drawCircumcenter = function() {
 // ---------------------------------------------------
 //  Bisector
 // ---------------------------------------------------
-var Bisector = function() {
+var Bisector = function(track) {
   this.arcs = [];
   this.intersections = [];
+  this.uniqueId = Math.round(Math.random()*10000);
+  this.track = track;
 };
 
 Bisector.prototype.addArc = function(center, delta, start, end, r) {
@@ -177,22 +180,32 @@ Bisector.prototype.draw = function() {
   if (this.arcs[0].drawComplete) {
     this.arcs[1].draw();
     // Get the intersection points of the two curves
-    if (this.intersections.length < 2)
-      this.intersections = this.getIntersections();
+    this.intersections = this.getIntersections();
     // If there are 2 intersections, draw a line between them
-    else if (!this.animatedLine)
-      this.animatedLine = new AnimatedLine(this.intersections[0].point, this.intersections[1].point, 3);
+    if (this.intersections.length == 2 && !this.animatedLine) {
+      this.offsetIntersections();
+    }
     // The animated line is defined, draw it
     if (this.animatedLine) {
       var path = this.animatedLine.draw();
-      // path.rotate(30, u);
-      // path.rotate(180, v);
       path.strokeWidth = 1;
       path.strokeColor = red;
     }
     // Draw the intersection points
     this.drawIntersections();
+    if (this.track)
+      console.log(this.intersections.length)
   }
+};
+
+Bisector.prototype.offsetIntersections = function() {
+  var alpha = Math.PI * this.intersections[1].point.subtract(this.intersections[0].point).angle / 180;
+  var beta = Math.PI * this.intersections[0].point.subtract(this.intersections[1].point).angle / 180;
+  var a = this.intersections[1].point.add(new Point(100 * Math.cos(alpha),
+                                                    100 * Math.sin(alpha)));
+  var b = this.intersections[0].point.add(new Point(100 * Math.cos(beta),
+                                                    100 * Math.sin(beta)));
+  this.animatedLine = new AnimatedLine(b, a, 10);
 };
 
 Bisector.prototype.getIntersections = function() {
@@ -204,7 +217,7 @@ Bisector.prototype.drawIntersections = function() {
     new Path.Circle({
       center: this.intersections[i].point,
       radius: 2,
-      strokeColor: green,
+      strokeColor: lightGrey,
       fillColor: '#fff'
     });
   }
@@ -235,8 +248,8 @@ Arc.prototype.draw = function() {
   var start = this.delta + this.start;
   var end = this.delta + this.end;
 
-  var s = Math.PI * start/180;
-  var now = Math.PI * angle/180;
+  var s = Math.PI * start / 180;
+  var now = Math.PI * angle / 180;
   var now_half = s + (now - s)/2;
 
   var from = this.center.add(new Point(this.r * Math.cos(s),
@@ -253,7 +266,7 @@ Arc.prototype.draw = function() {
     strokeColor: lightRed
   });
   if (angle < end)
-    this.arcSpan += Math.abs(this.end - this.start)/5;
+    this.arcSpan += Math.abs(this.end - this.start)/10;
   if(Math.abs(angle - end) < 1)
     this.drawComplete = true;
 };
@@ -261,7 +274,7 @@ Arc.prototype.draw = function() {
 
 
 // ---------------------------------------------------
-//  AnimatedLine
+//  Animated Line
 // ---------------------------------------------------
 var AnimatedLine = function(u, v, decc) {
   this.u = u;
@@ -269,14 +282,6 @@ var AnimatedLine = function(u, v, decc) {
   this.now = u;
   this.decc = decc;
 };
-
-// AnimatedLine.prototype.bisect = function(u, v, i) {
-//   var path = this.animateLine(u, v, this.b_now, i);
-//       path.rotate(30, u);
-//       // path.rotate(180, v);
-//       path.strokeWidth = 1;
-//       path.strokeColor = red;
-// };
 
 AnimatedLine.prototype.reset = function() {
   this.now = this.u;
@@ -286,4 +291,39 @@ AnimatedLine.prototype.draw = function() {
   var delta = this.v.subtract(this.now);
   this.now = this.now.add(delta.divide(this.decc));
   return new Path([this.u, this.now]);
+};
+
+
+
+// ---------------------------------------------------
+//  Animated Circle
+// ---------------------------------------------------
+var AnimatedCircle = function(center, r) {
+  this.center = center;
+  this.r = r;
+  this.angle = 0;
+};
+
+AnimatedCircle.prototype.reset = function() {
+  this.angle = 0;
+};
+
+AnimatedCircle.prototype.draw = function() {
+  var from = this.center.add(new Point(this.r * Math.cos(0),
+                                       this.r * Math.sin(0)));
+  var now = Math.PI * this.angle / 180;
+  var now_half = Math.PI * (this.angle - Math.abs(this.angle / 2)) / 180;
+  now_half = now_half <= 0 ? 0 : now_half;
+  var through = this.center.add(new Point(this.r * Math.cos(now_half),
+                                          this.r * Math.sin(now_half)));
+  var to = this.center.add(new Point(this.r * Math.cos(now),
+                                     this.r * Math.sin(now)));
+  if (this.angle >= 360) {
+    var path = new Path.Circle(center, this.r);
+        path.strokeColor = green;
+  } else {
+    var path = new Path.Arc(from, through, to);
+        path.strokeColor = green;
+  }
+  this.angle += (360 - this.angle) / 10;
 };
