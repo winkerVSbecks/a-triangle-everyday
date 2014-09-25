@@ -97,6 +97,9 @@ Shadow.prototype.draw = function() {
   // Draw Sides
   var path = new Path();
       path.fillColor = lightBlue;
+      path.strokeColor = lightBlue;
+      path.strokeWidth = 2;
+      path.strokeJoin = 'round';
       path.add(new Point(this.pts[0], this.pts[2]));
       path.add(new Point(this.pts[2], this.pts[1]));
       path.add(new Point(this.pts[1], this.pts[0]));
