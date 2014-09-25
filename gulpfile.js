@@ -15,7 +15,8 @@ var triangles = {
   pyramid       : 'triangle-which-is-really-a-pyramid',
   what          : 'what-is-a-triangle',
   centroid      : 'the-centroid',
-  circumcenter  : 'the-circumcenter'
+  circumcenter  : 'the-circumcenter',
+  shadow        : 'triangle-with-a-shadow'
 };
 
 gulp.task('dev', function() {
