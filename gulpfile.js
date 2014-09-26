@@ -17,7 +17,8 @@ var triangles = {
   centroid      : 'the-centroid',
   circumcenter  : 'the-circumcenter',
   shadow        : 'triangle-with-a-shadow',
-  vertexGrad    : 'vertex-color-interpolation'
+  vertexGrad    : 'vertex-color-interpolation',
+  graph         : 'graph-triangle'
 };
 
 gulp.task('dev', function() {
