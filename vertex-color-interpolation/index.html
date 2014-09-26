@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head lang="en">
+		<!-- meta -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+		<!-- title -->
+		<title>Triangle With a 3 Sided Gradient</title>
+		<!-- css -->
+		<link rel="stylesheet" href="../css/style.css">
+    <link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700|PT+Serif:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="css/svg.css">
+  </head>
+	<body class="text-center">
+    <!-- The SVG triangle -->
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.200000"
+      width="50%" height="100%"
+      viewBox="0 0 100.000000 86.600000"
+      xmlns:xlink="http://www.w3.org/1999/xlink">
+        <!-- Transform flips to show the backface -->
+        <g transform="matrix(1 0 0 -1 0 86.600000)">
+          <!-- The 3 gradients -->
+          <defs>
+            <linearGradient id="grad-1" gradientUnits="userSpaceOnUse"
+              x1="50.000000" y1="0.000000"
+              x2="50.000000" y2="86.600000">
+                <stop offset="0%" stop-color="#FD5800"/>
+                <stop offset="800%" stop-color="#212232"/>
+            </linearGradient>
+            <linearGradient id="grad-2" gradientUnits="userSpaceOnUse"
+              x1="0.000000" y1="86.60000"
+              x2="75.000000" y2="43.300000">
+                <stop offset="0%" stop-color="#3F2BD1"/>
+                <stop offset="800%" stop-color="#212232"/>
+            </linearGradient>
+            <linearGradient id="grad-3" gradientUnits="userSpaceOnUse"
+              x1="100.000000" y1="86.60000"
+              x2="25.000000" y2="43.300000">
+                <stop offset="0%" stop-color="#76E1FA"/>
+                <stop offset="800%" stop-color="#212232"/>
+            </linearGradient>
+            <!-- Define the paths -->
+            <!-- M indicates a moveto, the Ls indicate linetos, and
+              the z indicates a closepath -->
+            <path id="pathA-1"
+              d="M 50.000000,0.000000 L 0.000000,86.600000 100.000000,86.600000 Z"
+              fill="url(#grad-1)"/>
+            <path id="pathB-1"
+              d="M 50.000000,0.000000 L 0.000000,86.600000 100.000000,86.600000 Z"
+              fill="url(#grad-2)"/>
+            <!-- Define the filter which is a composite of two
+              of the gradients -->
+            <filter id="Composite">
+              <!-- The feImage filter fetches image data from an external
+                source and provides the pixel data as output (meaning, if the
+                external source is an SVG image, it is rasterize). -->
+              <feImage xlink:href="#pathA-1" result="layerA" x="0" y="0" />
+              <feImage xlink:href="#pathB-1" result="layerB" x="0" y="0" />
+              <!-- This filter primitive performs the combination of two input
+                images pixel-wise in image space using one of the Porter-Duff compositing operations: over, in, atop, out, xor.
+                Additionally, a component-wise arithmetic operation (with the
+                result clamped between [0..1]) can be applied. -->
+              <feComposite in="layerA" in2="layerB"
+                operator="arithmetic"
+                k1="0" k2="1.0" k3="1.0" k4="0"
+                result="temp"/>
+              <feComposite in="temp" in2="SourceGraphic"
+                operator="arithmetic"
+                k1="0" k2="1.0" k3="1.0" k4="0"/>
+            </filter>
+          </defs>
+          <!-- The 3rd layer with a filter consisting of the composite
+            of the first two layers -->
+          <g stroke="none"
+            stroke-width="0"
+            shape-rendering="crispEdges" >
+              <path d="M 50.000000,0.000000
+                L 0.000000,86.600000 100.000000,86.600000 Z"
+              fill="url(#grad-3)"
+              filter="url(#Composite)" />
+          </g>
+        </g>
+      </svg>
+    <!-- Attribution -->
+    <p class="attribution"><a target="_blank" href="http://www.alecjacobson.com/weblog/?p=3398">Using a technique described by Alec Jacobson</a></p>
+	</body>
+</html>

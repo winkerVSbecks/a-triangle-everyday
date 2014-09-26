@@ -108,4 +108,4 @@ Shadow.prototype.draw = function() {
 
 window.onmousemove = function(event) {
   triangle.shadow.update(event.x, event.y);
-}
+};

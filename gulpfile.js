@@ -16,7 +16,8 @@ var triangles = {
   what          : 'what-is-a-triangle',
   centroid      : 'the-centroid',
   circumcenter  : 'the-circumcenter',
-  shadow        : 'triangle-with-a-shadow'
+  shadow        : 'triangle-with-a-shadow',
+  vertexGrad    : 'vertex-color-interpolation'
 };
 
 gulp.task('dev', function() {

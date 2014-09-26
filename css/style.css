@@ -7,6 +7,22 @@ body {
 	overflow: hidden;
 }
 
+.text-center {
+  text-align: center;
+}
+
 .cursor-move {
   cursor: move;
+}
+
+p.attribution {
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+}
+.attribution a {
+  color: #333;
+  font-family: 'PT Sans Narrow', sans-serif;
 }
