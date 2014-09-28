@@ -19,7 +19,8 @@ var triangles = {
   shadow        : 'triangle-with-a-shadow',
   vertexGrad    : 'vertex-color-interpolation',
   graph         : 'graph-triangle',
-  edit          : 'editable-triangle'
+  edit          : 'editable-triangle',
+  pattern       : 'triangle-with-an-svg-pattern'
 };
 
 gulp.task('dev', function() {

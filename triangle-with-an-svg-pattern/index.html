@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head lang="en">
+		<!-- meta -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+		<!-- title -->
+		<title>Triangle With an SVG Pattern</title>
+		<!-- css -->
+		<link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="css/svg.css">
+    <script src="js/sketch.js"></script>
+  </head>
+	<body class="text-center">
+    <!-- Striped BG -->
+    <svg width="100%" height="100%">
+      <defs>
+         <!-- Striped pattern #3 -->
+        <pattern id="Stripes3"
+          width="100%" height="100%"
+          patternUnits="userSpaceOnUse">
+            <rect width="10%" height="100%" x="0" y="0" fill="#F4F4F4"/>
+            <rect width="10%" height="100%" x="10%" y="0" fill="#FFFFFF"/>
+            <rect width="10%" height="100%" x="20%" y="0" fill="#F4F4F4"/>
+            <rect width="10%" height="100%" x="30%" y="0" fill="#FFFFFF"/>
+            <rect width="10%" height="100%" x="40%" y="0" fill="#F4F4F4"/>
+            <rect width="10%" height="100%" x="50%" y="0" fill="#FFFFFF"/>
+            <rect width="10%" height="100%" x="60%" y="0" fill="#F4F4F4"/>
+            <rect width="10%" height="100%" x="70%" y="0" fill="#FFFFFF"/>
+            <rect width="10%" height="100%" x="80%" y="0" fill="#F4F4F4"/>
+            <rect width="10%" height="100%" x="90%" y="0" fill="#FFFFFF"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#Stripes3)"/>
+    </svg>
+    <!-- The SVG triangle -->
+    <svg width="100%" height="100%" viewBox="0 0 400 400" id="triangle">
+      <defs>
+        <!-- Striped pattern #1 -->
+        <pattern id="Stripes1"
+          width="80" height="80"
+          patternUnits="userSpaceOnUse">
+            <rect width="80" height="20" x="0" y="0" fill="#FEFC81"/>
+            <rect width="80" height="20" x="0" y="20" fill="#35F3FF"/>
+            <rect width="80" height="20" x="0" y="40" fill="#81FFAE"/>
+            <rect width="80" height="20" x="0" y="60" fill="#35F3FF"/>
+        </pattern>
+        <!-- Striped pattern #2 -->
+        <pattern id="Stripes2"
+          width="80" height="80"
+          patternUnits="userSpaceOnUse">
+            <rect width="80" height="40" x="0" y="0" fill="#FF3591"/>
+            <rect width="80" height="40" x="0" y="40" fill="#0600FD"/>
+        </pattern>
+        <!-- Triangle pattern -->
+        <pattern id="Pattern"
+          width="80" height="80"
+          patternUnits="userSpaceOnUse">
+            <rect width="80" height="80" fill="url(#Stripes1)"/>
+            <polygon points="40,0 80,80 0,80" fill="url(#Stripes2)"/>
+        </pattern>
+      </defs>
+      <!-- The main triangle -->
+      <polygon points="200,0 400,400 0,400" fill="url(#Pattern)"/>
+    </svg>
+	</body>
+</html>
