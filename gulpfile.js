@@ -18,7 +18,8 @@ var triangles = {
   circumcenter  : 'the-circumcenter',
   shadow        : 'triangle-with-a-shadow',
   vertexGrad    : 'vertex-color-interpolation',
-  graph         : 'graph-triangle'
+  graph         : 'graph-triangle',
+  edit          : 'editable-triangle'
 };
 
 gulp.task('dev', function() {
