@@ -20,7 +20,8 @@ var triangles = {
   vertexGrad    : 'vertex-color-interpolation',
   graph         : 'graph-triangle',
   edit          : 'editable-triangle',
-  pattern       : 'triangle-with-an-svg-pattern'
+  pattern       : 'triangle-with-an-svg-pattern',
+  blend         : 'blending-trails'
 };
 
 gulp.task('dev', function() {
