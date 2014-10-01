@@ -22,7 +22,8 @@ var triangles = {
   edit          : 'editable-triangle',
   pattern       : 'triangle-with-an-svg-pattern',
   blend         : 'blending-trails',
-  threeD        : '3d-triangle'
+  threeD        : '3d-triangle',
+  glossy        : 'glossy-triangle'
 };
 
 gulp.task('dev', function() {
