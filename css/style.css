@@ -15,6 +15,10 @@ body {
   cursor: move;
 }
 
+.cursor-none {
+  cursor: none;
+}
+
 p.attribution {
   margin: 0;
   padding: 0;

@@ -7,9 +7,10 @@ var triangle, w, h;
 window.onload = function() {
   paper.setup('glossy-triangle');
   triangle = new Triangle(calcA());
+  triangle.draw();
   paper.view.draw();
 
-  paper.view.onFrame = function (event) {
+  paper.view.onFrame = function(event) {
     project.clear();
     triangle.draw();
   };
@@ -81,96 +82,77 @@ var Gloss = function(a, x_off, y_off, pts) {
     right: pts[1].x
   };
 
-  this.path = new Path({
+  this.base = new Path({
     segments: [this.top, this.right, this.left],
     closed: true
   });
 
-  this.l = this.path.length;
+  this.l = this.base.length;
 
   this.update(w, h/2);
 };
 
 Gloss.prototype.update = function(m_x, m_y) {
-  this.light = new Point(m_x, m_y);
+  // Get the centroid of the triangle
+  var center = new Point( (this.top.x +this.left.x + this.right.x)/3,
+                          (this.top.y + this.left.y + this.right.y)/3);
+
+  // Calculate the direction and spread of light
+  var dir = this.m = new Point(m_x, m_y);
+  var l = dir.subtract(center).length;
+
+  var spread = Math.min(map(l, 0, 0.25*w, 5, 100), 100);
+
+  var minL = Math.abs(center.y - this.limits.upper);
+  var theta = Math.PI * dir.subtract(center).angle / 180;
+
+  var _dir = center.add(new Point(minL * 2 * Math.cos(theta),
+                                   minL * 2 * Math.sin(theta)));
+  // Segments that will be used to generate the light
+  this.pts = [center,
+    _dir.rotate(-spread/2, center),
+    _dir.rotate(spread/2, center)
+  ];
 };
 
 Gloss.prototype.draw = function() {
-  var pts = [];
+  var light = new Path({
+    segments: this.pts,
+    closed: true
+  });
 
-  // Top right quadrant
-  if (this.light.x > this.limits.middle
-        && this.light.y < this.limits.lower
-        && this.light.y < this.limits.upper) {
-    // left
-    pts.push(this.path.getPointAt(map(this.light.y,
-                                      0, this.limits.upper,
-                                      5*this.l/6, this.l)));
-    // middle
+  var pts = [];
+  var intersections = light.getIntersections(this.base);
+
+  // Build the specular
+  pts.push(intersections[0]);
+  if (light.contains(this.top)) {
     pts.push(this.top);
-    // right
-    if (this.light.x > 0.75 * w)
-      pts.push(this.right)
-    else
-      pts.push(this.path.getPointAt(map(this.light.x,
-                                        w/2, 0.75*w,
-                                        this.l/6, this.l/3)));
-  }
-  // Top left quadrant
-  else if (this.light.x <= this.limits.middle
-        && this.light.y < this.limits.lower
-        && this.light.y < this.limits.upper) {
-    // left
-    if (this.light.x < 0.25*w)
-      pts.push(this.left)
-    else
-      pts.push(this.path.getPointAt(map(this.light.x,
-                                      0.25*w, 0.5*w,
-                                      2*this.l/3, 5*this.l/6)));
-    // middle
-    pts.push(this.top);
-    // right
-    pts.push(this.path.getPointAt(map(this.light.y,
-                                      this.limits.upper, 0,
-                                      0, this.l/6)));
-  }
-  // Right quadrant
-  else if (this.light.x > this.limits.middle
-        && this.light.y < this.limits.lower
-        && this.light.y >= this.limits.upper) {
-    // left
-    pts.push(this.top);
-    // right
+  } else if (light.contains(this.left)) {
+    pts.push(this.left);
+  } else if (light.contains(this.right)) {
     pts.push(this.right);
   }
-  // Left quadrant
-  else if (this.light.x <= this.limits.middle
-        && this.light.y < this.limits.lower
-        && this.light.y >= this.limits.upper) {
-    // left
-    pts.push(this.left);
-    // right
-    pts.push(this.top);
-  }
+  pts.push(intersections[1]);
 
-  // Draw Sides
-  var path = new Path({
+  // Draw the specular gloss
+  var specular = new Path({
     segments: pts,
-    strokeColor: '#fff',
+    strokeColor: 'white',
     strokeWidth: 12,
     strokeJoin: 'round',
     strokeCap: 'round'
   });
 
-  // for (var i = 0; i < pts.length; i++) {
-  //   var colors = ['yellow', 'blue', 'green'];
-  //   var path = new Path.Circle({
-  //     center: pts[i],
-  //     radius: 5,
-  //     fillColor: colors[i]
-  //   });
-  // };
+  // Draw the light
+  var path = new Path.Circle({
+    center: this.m,
+    radius: 30,
+    fillColor: '#ffee33',
+    blendMode: 'multiply'
+  });
 };
+
 
 window.onmousemove = function(event) {
   triangle.gloss.update(event.x, event.y);
