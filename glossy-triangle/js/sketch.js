@@ -101,7 +101,7 @@ Gloss.prototype.update = function(m_x, m_y) {
   var dir = this.m = new Point(m_x, m_y);
   var l = dir.subtract(center).length;
 
-  var spread = Math.min(map(l, 0, 0.25*w, 5, 100), 100);
+  var spread = Math.min(map(l, 0, 0.25*w, 5, 90), 90);
 
   var minL = Math.abs(center.y - this.limits.upper);
   var theta = Math.PI * dir.subtract(center).angle / 180;
