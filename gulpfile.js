@@ -23,7 +23,8 @@ var triangles = {
   pattern       : 'triangle-with-an-svg-pattern',
   blend         : 'blending-trails',
   threeD        : '3d-triangle',
-  glossy        : 'glossy-triangle'
+  glossy        : 'glossy-triangle',
+  checkwave     : 'checkwave-triangle'
 };
 
 gulp.task('dev', function() {
