@@ -1,8 +1,8 @@
 paper.install(window);
 var SQRT_3 = Math.pow(3, 0.5);
 var red = '#e74c3c';
-var triangle, slash;
-var playAnimation = false;
+var black = '#222';
+var triangle, slash, playTriangleAnimation, playSlashAnimation;
 
 window.onload = function() {
   paper.setup('triangle-ninja');
@@ -18,8 +18,10 @@ window.onload = function() {
   paper.view.draw();
 
   paper.view.onFrame = function(event) {
-    if (playAnimation)
+    if (playTriangleAnimation)
       triangle.animateSplits();
+    if (playSlashAnimation)
+      slash.animate();
   };
 };
 
@@ -27,6 +29,7 @@ window.onload = function() {
 //  Triangle
 // ---------------------------------------------------
 var Triangle = function(a) {
+  this.a = a;
   this.resize(a);
 };
 
@@ -41,9 +44,12 @@ Triangle.prototype.resize = function(a) {
   // Draw the triangle
   this.path = new Path({
     segments: [this.top, this.left, this.right],
-    fillColor: '#222',
+    fillColor: black,
     closed: true
   });
+  // Reset animations
+  playTriangleAnimation = false;
+  playSlashAnimation = false;
 };
 
 Triangle.prototype.split = function(u, v) {
@@ -96,12 +102,10 @@ Triangle.prototype.split = function(u, v) {
 };
 
 Triangle.prototype.buildSplitTriangle = function(u, v, anchor, dir) {
-  if (this.splitTriangle)
-    this.splitTriangle.remove();
 
   this.splitTriangle = new Path({
     segments: [u, v, anchor],
-    fillColor: red,
+    fillColor: black,
     closed: true
   });
 
@@ -109,28 +113,30 @@ Triangle.prototype.buildSplitTriangle = function(u, v, anchor, dir) {
 };
 
 Triangle.prototype.buildSplitQuad = function(u, v, q, dir) {
-  if (this.splitQuad)
-    this.splitQuad.remove();
 
   this.splitQuad = new Path({
     segments: [u, v, q[0], q[1]],
-    fillColor: '#009dec',
+    fillColor: black,
     closed: true,
   });
 
   this.calcDestination(this.splitQuad, dir);
-  playAnimation = true;
+  playTriangleAnimation = true;
 };
 
 Triangle.prototype.calcDestination = function(path, dir) {
   if (dir === 'up')
-    path.destination = new Point(path.position.x, path.position.y - 200);
+    path.destination = new Point(random(path.position.x),
+                                 path.position.y - 200);
   if (dir === 'down')
-    path.destination = new Point(path.position.x, path.position.y + 200);
+    path.destination = new Point(random(path.position.x),
+                                 path.position.y + 200);
   if (dir === 'right')
-    path.destination = new Point(path.position.x + 200, path.position.y);
+    path.destination = new Point(path.position.x + 200,
+                                 random(path.position.y));
   if (dir === 'left')
-    path.destination = new Point(path.position.x - 200, path.position.y);
+    path.destination = new Point(path.position.x - 200,
+                                 random(path.position.y));
 };
 
 Triangle.prototype.animateSplits = function() {
@@ -139,18 +145,14 @@ Triangle.prototype.animateSplits = function() {
 };
 
 Triangle.prototype.animate = function(path) {
-
   var vector = path.destination.subtract(path.position);
-
-  console.log('vector:', vector);
-  console.log('path.destination:', path.destination);
-  console.log('path.position:', path.position);
-  // debugger;
 
   path.position = path.position.add(vector.divide(20));
 
   if (vector.length < 5) {
-    playAnimation = false;
+    playTriangleAnimation = false;
+    project.clear();
+    this.resize(this.a);
   }
 };
 
@@ -177,25 +179,43 @@ Slash.prototype.drag = function(x, y) {
   this.intersections = getIntersections(this.path, triangle.path);
 };
 
-Slash.prototype.animate = function() {
+Slash.prototype.itUp = function(x, y) {
+  this.destination = new Point(x, y);
+
   if (this.intersections.length == 2)
     triangle.split(this.intersections[0].point,
                    this.intersections[1].point);
-  this.path.remove();
+
   this.intersections = [];
+  playSlashAnimation = true;
+};
+
+Slash.prototype.animate = function() {
+  var vector = this.destination.subtract(this.path.segments[1].point);
+
+  this.path.segments[1].point = this.path.segments[1].point
+                                              .add(vector.divide(5));
+
+  if (vector.length === 0) {
+    playSlashAnimation = false;
+    this.path.remove();
+  }
 };
 
 // ---------------------------------------------------
 //  Mouse/Touch Events
 // ---------------------------------------------------
 onmousedown = function(event) {
-  slash.init(event.x, event.y);
+  if (!playSlashAnimation && !playTriangleAnimation)
+    slash.init(event.x, event.y);
 };
 onmousedrag = function(e) {
-  slash.drag(e.event.x, e.event.y);
+  if (!playSlashAnimation && !playTriangleAnimation)
+    slash.drag(e.event.x, e.event.y);
 };
-onmouseup = function(event) {
-  slash.animate();
+onmouseup = function(e) {
+  if (!playTriangleAnimation)
+    slash.itUp(e.event.x, e.event.y);
 };
 
 window.onresize = function() {
@@ -207,9 +227,15 @@ window.onresize = function() {
 // ---------------------------------------------------
 //  Helpers
 // ---------------------------------------------------
-var map = function (n, start1, stop1, start2, stop2) {
+var map = function(n, start1, stop1, start2, stop2) {
   return (n - start1) / (stop1 - start1) * (stop2 - start2) + start2;
 };
+
+var random = function(o) {
+  var minimum = o - 100;
+  var maximum = o + 100;
+  return Math.round(Math.random() * (maximum - minimum) + minimum);
+}
 
 var calcA = function() {
   return Math.max(250, Math.min(paper.view.size.width, paper.view.size.height) - 400);
@@ -217,13 +243,13 @@ var calcA = function() {
 
 function getIntersections(path1, path2) {
   var intersections = path1.getIntersections(path2);
-  for (var i = 0; i < intersections.length; i++) {
-    new Path.Circle({
-      center: intersections[i].point,
-      radius: 5,
-      fillColor: '#009dec'
-    }).removeOnDrag()
-      .removeOnUp();
-  }
+  // for (var i = 0; i < intersections.length; i++) {
+  //   new Path.Circle({
+  //     center: intersections[i].point,
+  //     radius: 5,
+  //     fillColor: '#009dec'
+  //   }).removeOnDrag()
+  //     .removeOnUp();
+  // }
   return intersections;
 }
