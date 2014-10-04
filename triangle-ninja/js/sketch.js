@@ -7,12 +7,6 @@ var triangle, slash, playTriangleAnimation, playSlashAnimation;
 window.onload = function() {
   paper.setup('triangle-ninja');
 
-  // Event handlers
-  var tool = new Tool();
-  tool.onMouseDown = onmousedown;
-  tool.onMouseDrag = onmousedrag;
-  tool.onMouseUp = onmouseup;
-
   slash = new Slash();
   triangle = new Triangle(calcA());
   paper.view.draw();
@@ -196,7 +190,7 @@ Slash.prototype.animate = function() {
   this.path.segments[1].point = this.path.segments[1].point
                                               .add(vector.divide(5));
 
-  if (vector.length === 0) {
+  if (vector.length < 1) {
     playSlashAnimation = false;
     this.path.remove();
   }
@@ -205,18 +199,54 @@ Slash.prototype.animate = function() {
 // ---------------------------------------------------
 //  Mouse/Touch Events
 // ---------------------------------------------------
-onmousedown = function(event) {
+var isMouseDown = false;
+var onmousedown = function(e) {
+  isMouseDown = true;
+  e.preventDefault()
   if (!playSlashAnimation && !playTriangleAnimation)
-    slash.init(event.x, event.y);
+    slash.init(e.x, e.y);
 };
-onmousedrag = function(e) {
+var onmousemove = function(e) {
+  if (!isMouseDown)
+    return;
+  e.preventDefault()
   if (!playSlashAnimation && !playTriangleAnimation)
-    slash.drag(e.event.x, e.event.y);
+    slash.drag(e.x, e.y);
 };
-onmouseup = function(e) {
+var onmouseup = function(e) {
+  isMouseDown = false;
+  e.preventDefault()
   if (!playTriangleAnimation)
-    slash.itUp(e.event.x, e.event.y);
+    slash.itUp(e.x, e.y);
 };
+
+document.addEventListener("mousedown", onmousedown, true);
+document.addEventListener("mousemove", onmousemove, true);
+document.addEventListener("mouseup", onmouseup, true);
+
+
+var ontouchstart  = function(e) {
+  e.preventDefault()
+  var touch = e.changedTouches[0];
+  if (!playSlashAnimation && !playTriangleAnimation)
+    slash.init(touch.clientX, touch.clientY);
+};
+var ontouchmove  = function(e) {
+  e.preventDefault()
+  var touch = e.changedTouches[0];
+  if (!playSlashAnimation && !playTriangleAnimation)
+    slash.drag(touch.clientX, touch.clientY);
+};
+var ontouchend = function(e) {
+  e.preventDefault()
+  var touch = e.changedTouches[0];
+  if (!playTriangleAnimation)
+    slash.itUp(touch.clientX, touch.clientY);
+};
+
+document.addEventListener("touchstart", ontouchstart, true);
+document.addEventListener("touchmove", ontouchmove, true);
+document.addEventListener("touchend", ontouchend, true);
 
 window.onresize = function() {
   project.clear();
