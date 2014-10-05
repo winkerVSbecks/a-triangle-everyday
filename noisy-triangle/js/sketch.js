@@ -56,13 +56,15 @@ Triangle.prototype.buildPulse = function() {
   this.ping = false;
 
   this.pulse.scale(0.1, [this.x_off, this.y_off]);
+
+  bumpkit.createBeep().frequency(1024).play();
 };
 
 Triangle.prototype.animatePulse = function() {
   this.pulse.scale(1.06, [this.x_off, this.y_off]);
 
   if (Math.abs(this.pulse.bounds.width - this.path.bounds.width) < 20 && !this.ping) {
-    bumpkit.createBeep().frequency(1024).play();
+    bumpkit.createBeep().frequency(512).play();
     bumpkit.createBeep({
       duration: .5,
       frequency: 200, //randomNumber(512, 1024)
