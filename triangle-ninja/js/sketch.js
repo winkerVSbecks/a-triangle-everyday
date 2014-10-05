@@ -1,7 +1,5 @@
 paper.install(window);
 var SQRT_3 = Math.pow(3, 0.5);
-var red = '#e74c3c';
-var black = '#222';
 var triangle, slash, playTriangleAnimation, playSlashAnimation;
 
 window.onload = function() {
@@ -28,6 +26,9 @@ var Triangle = function(a) {
 };
 
 Triangle.prototype.resize = function(a) {
+  // Draw the BG
+  var background = new Path.Rectangle(view.bounds);
+      background.fillColor = '#212232';
   // Offset
   var x_off = paper.view.center.x;
   var y_off = 1.1 * paper.view.center.y;
@@ -38,7 +39,7 @@ Triangle.prototype.resize = function(a) {
   // Draw the triangle
   this.path = new Path({
     segments: [this.top, this.left, this.right],
-    fillColor: black,
+    fillColor: '#3F2BD1',
     closed: true
   });
   // Reset animations
@@ -96,10 +97,9 @@ Triangle.prototype.split = function(u, v) {
 };
 
 Triangle.prototype.buildSplitTriangle = function(u, v, anchor, dir) {
-
   this.splitTriangle = new Path({
     segments: [u, v, anchor],
-    fillColor: black,
+    fillColor: '#76E1FA',
     closed: true
   });
 
@@ -110,7 +110,7 @@ Triangle.prototype.buildSplitQuad = function(u, v, q, dir) {
 
   this.splitQuad = new Path({
     segments: [u, v, q[0], q[1]],
-    fillColor: black,
+    fillColor: '#FE5900',
     closed: true,
   });
 
@@ -162,7 +162,7 @@ Slash.prototype.init = function(x, y) {
   // Draw the triangle
   this.path = new Path({
     segments: [[x, y], [x, y]],
-    strokeColor: red
+    strokeColor: '#FE5900'
   });
 };
 
