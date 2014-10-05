@@ -29,6 +29,11 @@ Triangle.prototype.resize = function(a) {
   // Draw the BG
   var background = new Path.Rectangle(view.bounds);
       background.fillColor = '#212232';
+  // How to text
+  var text = new PointText(new Point(paper.view.size.width - 10, paper.view.size.height - 20));
+      text.justification = 'right';
+      text.fillColor = '#FE5900';
+      text.content = 'swipe or click and drag across the triangle';
   // Offset
   var x_off = paper.view.center.x;
   var y_off = 1.1 * paper.view.center.y;
@@ -273,13 +278,5 @@ var calcA = function() {
 
 function getIntersections(path1, path2) {
   var intersections = path1.getIntersections(path2);
-  // for (var i = 0; i < intersections.length; i++) {
-  //   new Path.Circle({
-  //     center: intersections[i].point,
-  //     radius: 5,
-  //     fillColor: '#009dec'
-  //   }).removeOnDrag()
-  //     .removeOnUp();
-  // }
   return intersections;
 }
