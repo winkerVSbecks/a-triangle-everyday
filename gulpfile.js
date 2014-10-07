@@ -26,7 +26,9 @@ var triangles = {
   glossy        : 'glossy-triangle',
   checkwave     : 'checkwave-triangle',
   ninja         : 'triangle-ninja',
-  noisy         : 'noisy-triangle'
+  noisy         : 'noisy-triangle',
+  flight        : 'flight-of-the-triangle',
+  hypno         : 'hypno-triangle'
 };
 
 gulp.task('dev', function() {
