@@ -28,7 +28,8 @@ var triangles = {
   ninja         : 'triangle-ninja',
   noisy         : 'noisy-triangle',
   flight        : 'flight-of-the-triangle',
-  hypno         : 'hypno-triangle'
+  hypno         : 'hypno-triangle',
+  types         : 'types-of-triangles'
 };
 
 gulp.task('dev', function() {
