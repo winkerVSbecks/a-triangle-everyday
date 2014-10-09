@@ -162,10 +162,10 @@ Triangle.prototype.animate = function(t) {
               this.startVs[5].rotate(bounce(t - tStart, 0,
                                             this.angles[5] - this.startAs[5],
                                             animTime));
-  } else if (t - tStart > 300 && t - tStart < 500) {
+  } else if (t - tStart > 200 && t - tStart < 400) {
     this.resetToZero();
     boing.currentTime = 0;
-  } else if (t - tStart >= 500) {
+  } else if (t - tStart >= 400) {
     tStart = t;
     boing.play();
   }
