@@ -29,7 +29,8 @@ var triangles = {
   noisy         : 'noisy-triangle',
   flight        : 'flight-of-the-triangle',
   hypno         : 'hypno-triangle',
-  types         : 'types-of-triangles'
+  types         : 'types-of-triangles',
+  reuleaux      : 'reuleaux-triangle'
 };
 
 gulp.task('dev', function() {
