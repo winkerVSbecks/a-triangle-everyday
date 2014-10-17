@@ -30,7 +30,8 @@ var triangles = {
   flight        : 'flight-of-the-triangle',
   hypno         : 'hypno-triangle',
   types         : 'types-of-triangles',
-  reuleaux      : 'reuleaux-triangle'
+  reuleaux      : 'reuleaux-triangle',
+  rain          : 'triangle-in-the-rain'
 };
 
 gulp.task('dev', function() {
