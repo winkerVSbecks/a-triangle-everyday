@@ -32,7 +32,8 @@ var triangles = {
   types         : 'types-of-triangles',
   reuleaux      : 'reuleaux-triangle',
   rain          : 'triangle-in-the-rain',
-  space         : 'triangle-lost-in-space'
+  space         : 'triangle-lost-in-space',
+  elk           : 'sleepy-elk-triangle'
 };
 
 gulp.task('dev', function() {
