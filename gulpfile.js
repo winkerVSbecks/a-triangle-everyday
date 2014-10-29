@@ -33,7 +33,8 @@ var triangles = {
   reuleaux      : 'reuleaux-triangle',
   rain          : 'triangle-in-the-rain',
   space         : 'triangle-lost-in-space',
-  elk           : 'sleepy-elk-triangle'
+  elk           : 'sleepy-elk-triangle',
+  love          : 'triangle-in-love'
 };
 
 gulp.task('dev', function() {
