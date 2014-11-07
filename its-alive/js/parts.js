@@ -179,7 +179,7 @@ var Resistance = function(pos, dir) {
 // ---------------------------------------------------
 //  Wire
 // ---------------------------------------------------
-var Wire = function(length, dir, pos, joint, style) {
+var Wire = function(length, dir, pos, joint, atEnd, style) {
 
   var segments = [pos];
 
@@ -209,12 +209,20 @@ var Wire = function(length, dir, pos, joint, style) {
   // Add a joint
   if (joint) {
 
-    this.joint = new Path.Circle({
-      center: pos,
-      radius: 2,
-      fillColor: darkBlue,
-      strokeColor: darkBlue
-    })
+    if (atEnd)
+      this.joint = new Path.Circle({
+        center: segments[1],
+        radius: 2,
+        fillColor: darkBlue,
+        strokeColor: darkBlue
+      })
+    else
+      this.joint = new Path.Circle({
+        center: pos,
+        radius: 2,
+        fillColor: darkBlue,
+        strokeColor: darkBlue
+      })
 
     // Assign styles to this path
     for (var prop in style) {

@@ -42,6 +42,7 @@ var buildCircuit = function() {
     rotation: 90
   });
 
+  // RIGHT OF TRIANGLE
   var P_R = triangle.path.segments[0].point;
   var J_1 = P_R.add([20, 0]);
 
@@ -51,7 +52,7 @@ var buildCircuit = function() {
   wires.push(new Wire(50, 'left', J_1.add([0, 100]) ));
   bits.push(new Resistance(J_1.add([-50, 100]), 'left'));
   wires.push(new Wire(30, 'left', J_1.add([-65, 100]) ));
-  wires.push(new Wire(85, 'up', J_1.add([-95, 100]) ));
+  wires.push(new Wire(85, 'up', J_1.add([-95, 100]), true, true));
 
   // Capacitor
   var J_2 = J_1.add([30, 0]);
@@ -91,4 +92,34 @@ var buildCircuit = function() {
   wires.push(new Wire(15, 'right', J_5.add([-15, 60]) ));
   var k = SQRT_3 * 15 / 2;
   arrows.push(new Arrow(J_5.add([-15, 60]) ));
+
+
+  // LEFT OF TRIANGLE
+
+  // Bottom track
+  var J_6 = J_1.add([-72, 15]);
+  wires.push(new Wire(60, 'left', J_6));
+  wires.push(new Wire(60, 'down', J_6.add([-60, 0]) ));
+  wires.push(new Wire(15, 'left', J_6.add([-60, 60]) ));
+  bits.push(new Resistance(J_6.add([-75, 60]), 'left'));
+  wires.push(new Wire(15, 'left', J_6.add([-90, 60]) ));
+
+  // Top track
+  var J_7 = J_6.add([0, -30]);
+  wires.push(new Wire(180, 'left', J_7));
+  bits.push(new Resistance(J_7.add([-180, 0]), 'left'));
+  wires.push(new Wire(15, 'left', J_7.add([-195, 0]) ));
+  arrows.push(new Arrow(J_7.add([-210, 0]), 30, 'up'));
+
+  // First vertical
+  var J_8 = J_7.add([-85, 0]);
+  wires.push(new Wire(15, 'down', J_8 ));
+  bits.push(new Resistance(J_8.add([0, 15]), 'down'));
+  arrows.push(new Arrow(J_8.add([0, 30]), 40));
+
+  // Second vertical
+  var J_9 = J_7.add([-115, 0]);
+  wires.push(new Wire(15, 'down', J_9 ));
+  // bits.push(new Resistance(J_8.add([0, 15]), 'down'));
+  arrows.push(new Arrow(J_9.add([0, 25]), 40));
 };
