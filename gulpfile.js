@@ -35,7 +35,7 @@ var triangles = {
   space         : 'triangle-lost-in-space',
   elk           : 'sleepy-elk-triangle',
   love          : 'triangle-in-love',
-  js            : 'triangle-js'
+  alive         : 'its-alive'
 };
 
 gulp.task('dev', function() {
