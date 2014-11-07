@@ -156,21 +156,23 @@ var Resistance = function(pos, dir) {
   var SQRT_3 = Math.pow(3, 0.5);
   var a = 5;
 
-  if (dir === 'down')
-    var segments = [
-      pos,
-      [pos.x - a, pos.y + a/2],
-      [pos.x + a, pos.y + a],
-      [pos.x - a, pos.y + 1.5*a],
-      [pos.x + a, pos.y + 2*a],
-      [pos.x - a, pos.y + 2.5*a],
-      [pos.x, pos.y + 3*a]
-    ];
+  var segments = [
+    pos,
+    [pos.x - a, pos.y + a/2],
+    [pos.x + a, pos.y + a],
+    [pos.x - a, pos.y + 1.5*a],
+    [pos.x + a, pos.y + 2*a],
+    [pos.x - a, pos.y + 2.5*a],
+    [pos.x, pos.y + 3*a]
+  ];
 
-  var path = new Path({
+  this.path = new Path({
     segments: segments,
     strokeColor: darkBlue
   });
+
+  if (dir === 'left')
+    this.path.rotate(90, pos);
 };
 
 

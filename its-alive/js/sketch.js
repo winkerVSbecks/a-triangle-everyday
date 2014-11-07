@@ -48,6 +48,10 @@ var buildCircuit = function() {
   // Bridge
   wires.push(new Wire(50, 'right', P_R));
   wires.push(new Wire(100, 'down', J_1, true));
+  wires.push(new Wire(50, 'left', J_1.add([0, 100]) ));
+  bits.push(new Resistance(J_1.add([-50, 100]), 'left'));
+  wires.push(new Wire(30, 'left', J_1.add([-65, 100]) ));
+  wires.push(new Wire(85, 'up', J_1.add([-95, 100]) ));
 
   // Capacitor
   var J_2 = J_1.add([30, 0]);
