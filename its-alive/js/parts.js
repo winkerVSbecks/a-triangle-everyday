@@ -33,6 +33,12 @@ var Capacitor = function(pos, dir, style) {
     }
   }
 };
+Capacitor.prototype.glow = function() {
+  this.group.strokeColor = 'white';
+};
+Capacitor.prototype.reset = function() {
+  this.group.strokeColor = darkBlue;
+};
 
 
 
@@ -67,7 +73,12 @@ var NonPolCapacitor = function(pos, dir, style) {
     }
   }
 };
-
+NonPolCapacitor.prototype.glow = function() {
+  this.group.strokeColor = 'white';
+};
+NonPolCapacitor.prototype.reset = function() {
+  this.group.strokeColor = darkBlue;
+};
 
 
 // ---------------------------------------------------
@@ -109,7 +120,12 @@ var Diode = function(pos, h, dir, style) {
     }
   }
 };
-
+Diode.prototype.glow = function() {
+  this.group.strokeColor = 'white';
+};
+Diode.prototype.reset = function() {
+  this.group.strokeColor = darkBlue;
+};
 
 
 // ---------------------------------------------------
@@ -130,7 +146,7 @@ var Tag = function(pos, text, dir, style) {
     closed: true
   });
 
-  var text = new PointText({
+  this.text = new PointText({
     point: [pos.x + 10, pos.y + 3],
     content: text,
     fillColor: darkBlue,
@@ -140,7 +156,7 @@ var Tag = function(pos, text, dir, style) {
 
   if (dir === 'reverse') {
     path.rotate(180, pos);
-    text.position.x = text.position.x - 105;
+    this.text.position.x = this.text.position.x - 105;
   }
 
   this.group = new Group({
@@ -155,6 +171,12 @@ var Tag = function(pos, text, dir, style) {
     }
   }
 };
+Tag.prototype.glow = function() {
+  this.text.strokeColor = '#E1F5F7';
+};
+Tag.prototype.reset = function() {
+  this.text.strokeColor = darkBlue;
+};
 
 
 // ---------------------------------------------------
@@ -167,24 +189,45 @@ var Arrow = function(pos, b, dir) {
   var l = b ? pos.y + b : pos.y + a;
 
   var segments = [
-    pos,
     [pos.x, l],
     [pos.x + a/2, l],
     [pos.x, l + SQRT_3 * a/2],
-    [pos.x - a/2, l],
-    [pos.x, l]
+    [pos.x - a/2, l]
   ];
 
-  this.path = new Path({
+  this.head = new Path({
     segments: segments,
     closed: true,
-    strokeColor: darkBlue
+    strokeColor: darkBlue,
+    strokeWidth: 0.5
   });
 
-  if (dir === 'up')
-    this.path.rotate(180, pos);
-};
+  this.shaft = new Path({
+    segments: [pos, [pos.x, l] ],
+    closed: true,
+    strokeColor: darkBlue,
+    strokeWidth: 0.5
+  });
 
+  this.group = new Group({
+    children: [this.head, this.shaft],
+  });
+
+  if (dir === 'up') {
+    this.group.rotate(180, pos);
+    var k = b ? pos.y - b : pos.y - a;
+  } else {
+    var k = b ? pos.y + b : pos.y + a;
+  }
+  // Build live wire animation
+  this.live = new AnimatedLine(pos, new Point(pos.x, k), 10);
+};
+Arrow.prototype.glow = function() {
+  this.head.strokeColor = 'white';
+};
+Arrow.prototype.reset = function() {
+  this.head.strokeColor = darkBlue;
+};
 
 
 // ---------------------------------------------------
@@ -207,13 +250,19 @@ var Resistance = function(pos, dir) {
 
   this.path = new Path({
     segments: segments,
-    strokeColor: darkBlue
+    strokeColor: darkBlue,
+    strokeWidth: 0.75
   });
 
   if (dir === 'left')
     this.path.rotate(90, pos);
 };
-
+Resistance.prototype.glow = function() {
+  this.path.strokeColor = 'white';
+};
+Resistance.prototype.reset = function() {
+  this.path.strokeColor = darkBlue;
+};
 
 // ---------------------------------------------------
 //  Wire
@@ -235,8 +284,12 @@ var Wire = function(length, dir, pos, joint, atEnd, style) {
   this.path = new Path({
     segments: segments,
     closed: true,
+    strokeWidth: 0.5,
     strokeColor: darkBlue
   });
+
+  // Build live wire animation
+  this.live = new AnimatedLine(segments[0], segments[1], 10);
 
   // Assign styles to this path
   for (var prop in style) {
@@ -269,5 +322,17 @@ var Wire = function(length, dir, pos, joint, atEnd, style) {
         this.joint[prop] = style[prop];
       }
     }
+  }
+};
+Wire.prototype.glow = function() {
+  if (this.joint) {
+    this.joint.strokeColor = lightBlue;
+    this.joint.fillColor = lightBlue;
+  }
+};
+Wire.prototype.reset = function() {
+  if (this.joint) {
+    this.joint.strokeColor = darkBlue;
+    this.joint.fillColor = darkBlue;
   }
 };

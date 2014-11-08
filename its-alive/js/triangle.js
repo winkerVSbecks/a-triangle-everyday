@@ -48,16 +48,18 @@ Triangle.prototype.getPoints = function() {
 
 Triangle.prototype.glow = function(t) {
   this.light.visible = true;
-  this.light.fillColor = '#FA0B41';
-  this.light.strokeColor = '#FA0B41';
+  this.light.fillColor ='#FA0B41';
+  this.light.strokeColor ='#FA0B41';
   this.path.strokeColor = '#000';
-
+  // Pulsate
   var sinus = Math.sin(t * 3);
   this.light.scale(sinus * 0.005 + 1);
 };
 
 Triangle.prototype.stopGlow = function() {
+  this.light.remove();
   this.light = this.path.clone();
+  this.light.bringToFront();
   this.light.visible = false;
   this.path.strokeColor = darkBlue;
 };

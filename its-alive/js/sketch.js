@@ -2,12 +2,18 @@ paper.install(window);
 
 var darkBlue = '#006680';
 var lightBlue = '#00CCFF';
+var green = '#31BCBF';
+var purple = '#F4BFF2';
+var yellow = '#FFFF9C';
 var triangle;
 var triangles = [];
 var wires = [];
 var bits = [];
 var tags = [];
 var arrows = [];
+var doAnimate = false;
+var areGlowing = false;
+var t = 0;
 
 window.onload = function() {
   paper.setup('its-alive');
@@ -19,19 +25,90 @@ window.onload = function() {
   buildText();
   triangle.light.bringToFront();
 
-  for (var i = wires.length - 1; i >= 0; i--) {
-    wires[i].path.strokeColor = lightBlue;
-  };
-
   paper.view.draw();
 
   // Animation
-  paper.view.onFrame = function (event) {
-    triangle.glow(event.time);
+  paper.view.onFrame = function(event) {
+    if (doAnimate) {
+
+      if (!areGlowing)
+        glowBits();
+
+      triangle.glow(t);
+
+      for (var i = wires.length - 1; i >= 0; i--) {
+        wires[i].live.draw();
+      };
+      for (var i = arrows.length - 1; i >= 0; i--) {
+        arrows[i].live.draw();
+      };
+
+      t += 0.016666667;
+    }
   };
 };
 
-// Handle re-size
+
+// ---------------------------------------------------
+//  Animation
+// ---------------------------------------------------
+var alive = function() {
+  doAnimate = true;
+  document.getElementById('alive').className = ('btn active');
+};
+
+var reset = function() {
+  doAnimate = false;
+  areGlowing = false;
+  document.getElementById('alive').className = ('btn');
+
+  for (var i = wires.length - 1; i >= 0; i--) {
+    wires[i].live.reset();
+    wires[i].reset();
+  };
+
+  for (var i = arrows.length - 1; i >= 0; i--) {
+    arrows[i].live.reset();
+    arrows[i].reset();
+  };
+
+  for (var i = bits.length - 1; i >= 0; i--) {
+    bits[i].reset();
+  };
+
+  for (var i = tags.length - 1; i >= 0; i--) {
+    tags[i].reset();
+  };
+
+  triangle.stopGlow();
+
+  t = 0;
+};
+
+var glowBits = function() {
+  for (var i = arrows.length - 1; i >= 0; i--) {
+    arrows[i].glow();
+  };
+
+  for (var i = bits.length - 1; i >= 0; i--) {
+    bits[i].glow();
+  };
+
+  for (var i = wires.length - 1; i >= 0; i--) {
+    wires[i].glow();
+  };
+
+  for (var i = tags.length - 1; i >= 0; i--) {
+    tags[i].glow();
+  };
+
+  areGlowing = true;
+};
+
+
+// ---------------------------------------------------
+//  Handle Re-Size
+// ---------------------------------------------------
 window.onresize = function() {
   var background = new Path.Rectangle(view.bounds);
       background.fillColor = '#000';
@@ -40,6 +117,10 @@ window.onresize = function() {
   triangle.light.bringToFront();
 };
 
+
+// ---------------------------------------------------
+//  Build
+// ---------------------------------------------------
 var buildCircuit = function() {
   var SQRT_3 = Math.pow(3, 0.5);
 
@@ -281,7 +362,7 @@ var buildText = function() {
   }));
 
   textGroup.style = {
-    fillColor: darkBlue,
+    fillColor: '#777',
     fontFamily: 'Courier New',
     fontSize: 10,
     justification: 'center'
