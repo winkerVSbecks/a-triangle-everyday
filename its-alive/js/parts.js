@@ -37,6 +37,40 @@ var Capacitor = function(pos, dir, style) {
 
 
 // ---------------------------------------------------
+//  Non Polarized Capacitor
+// ---------------------------------------------------
+var NonPolCapacitor = function(pos, dir, style) {
+
+  // Build the path
+  var path1 = new Path.Line({
+    from: pos.add([0, 10]),
+    to: pos.add([0, -10])
+  });
+
+  var path2 = new Path.Line({
+    from: pos.add([-5, 10]),
+    to: pos.add([-5, -10])
+  });
+
+  this.group = new Group({
+    children: [path1, path2],
+    strokeColor: darkBlue
+  });
+
+  if (dir === 'down')
+    this.group.rotate(90, pos);
+
+  // Assign styles to this path
+  for (var prop in style) {
+    if( style.hasOwnProperty(prop) ) {
+      this.group[prop] = style[prop];
+    }
+  }
+};
+
+
+
+// ---------------------------------------------------
 //  Diode
 // ---------------------------------------------------
 var Diode = function(pos, h, dir, style) {
@@ -81,7 +115,7 @@ var Diode = function(pos, h, dir, style) {
 // ---------------------------------------------------
 //  Tag
 // ---------------------------------------------------
-var Tag = function(pos, text, style) {
+var Tag = function(pos, text, dir, style) {
 
   var segments = [
     pos,
@@ -103,6 +137,11 @@ var Tag = function(pos, text, style) {
     fontFamily: 'Courier New',
     fontSize: 10
   });
+
+  if (dir === 'reverse') {
+    path.rotate(180, pos);
+    text.position.x = text.position.x - 105;
+  }
 
   this.group = new Group({
     children: [path],

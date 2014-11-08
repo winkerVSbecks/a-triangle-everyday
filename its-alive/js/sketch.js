@@ -16,18 +16,28 @@ window.onload = function() {
       background.fillColor = '#000';
 
   buildCircuit();
+  buildText();
+  triangle.light.bringToFront();
+
+  for (var i = wires.length - 1; i >= 0; i--) {
+    wires[i].path.strokeColor = lightBlue;
+  };
 
   paper.view.draw();
 
   // Animation
   paper.view.onFrame = function (event) {
-
+    triangle.glow(event.time);
   };
 };
 
 // Handle re-size
 window.onresize = function() {
-
+  var background = new Path.Rectangle(view.bounds);
+      background.fillColor = '#000';
+  buildCircuit();
+  buildText();
+  triangle.light.bringToFront();
 };
 
 var buildCircuit = function() {
@@ -36,6 +46,10 @@ var buildCircuit = function() {
   // Triangle Arrows
   arrows.push(new Arrow(view.center.add([-10, 20]), 40));
   arrows.push(new Arrow(view.center.add([-10, -20]), 40, 'up'));
+
+  // Triangle lines
+  wires.push(new Wire(20, 'up', view.center.add([10, -10]) ));
+  wires.push(new Wire(20, 'down', view.center.add([10, 10]) ));
 
   // Main triangle
   triangle = new Triangle(60, view.center, {
@@ -102,7 +116,9 @@ var buildCircuit = function() {
   wires.push(new Wire(60, 'down', J_6.add([-60, 0]) ));
   wires.push(new Wire(15, 'left', J_6.add([-60, 60]) ));
   bits.push(new Resistance(J_6.add([-75, 60]), 'left'));
-  wires.push(new Wire(15, 'left', J_6.add([-90, 60]) ));
+  wires.push(new Wire(22, 'left', J_6.add([-90, 60]) ));
+  bits.push(new NonPolCapacitor(J_6.add([-112, 60]) ));
+  wires.push(new Wire(93, 'left', J_6.add([-117, 60]) ));
 
   // Top track
   var J_7 = J_6.add([0, -30]);
@@ -113,13 +129,185 @@ var buildCircuit = function() {
 
   // First vertical
   var J_8 = J_7.add([-85, 0]);
-  wires.push(new Wire(15, 'down', J_8 ));
+  wires.push(new Wire(15, 'down', J_8, true));
   bits.push(new Resistance(J_8.add([0, 15]), 'down'));
-  arrows.push(new Arrow(J_8.add([0, 30]), 40));
+  arrows.push(new Arrow(J_8.add([0, 30]), 30));
 
   // Second vertical
   var J_9 = J_7.add([-115, 0]);
-  wires.push(new Wire(15, 'down', J_9 ));
-  // bits.push(new Resistance(J_8.add([0, 15]), 'down'));
-  arrows.push(new Arrow(J_9.add([0, 25]), 40));
+  wires.push(new Wire(15, 'down', J_9, true));
+  bits.push(new NonPolCapacitor(J_9.add([0, 20]), 'down'));
+  arrows.push(new Arrow(J_9.add([0, 20]), 40));
+
+  // Amp Tip tag
+  tags.push(new Tag(J_6.add([-210, 60]), 'Amp "Tip"', 'reverse'));
+
+  // Amp GND tag
+  tags.push(new Tag(J_6.add([-210, 90]), 'Amp Bat GND', 'reverse'));
+
+  // Bottom arrow
+  wires.push(new Wire(15, 'right', J_6.add([-210, 90]) ));
+  arrows.push(new Arrow(J_6.add([-195, 90]) ));
+};
+
+
+var buildText = function() {
+  var c = view.center;
+  var textGroup = new Group();
+
+  textGroup.addChild(new PointText({
+    point: c.add([-237, -60]),
+    content: '+5v'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([-215, -25]),
+    content: 'R3'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([-212, 2]),
+    content: '47K'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([-175, 10]),
+    content: '0.1 uf'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([-162, -3]),
+    content: 'C2'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([-155, 70]),
+    content: 'C1'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([-150, 95]),
+    content: '0.1 uf'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([-110, 92]),
+    content: '1K'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([-110, 65]),
+    content: 'R1'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([-110, -20]),
+    content: 'R4'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([-110, -30]),
+    content: '2.5 VG'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([-93, 5]),
+    content: '47K'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([-32, 12]),
+    content: '2'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([-32, -18]),
+    content: '3'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([-10, -75]),
+    content: '+5v'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([-3, -22]),
+    content: '7'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([-3, 27]),
+    content: '4'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([15, -12]),
+    content: '5'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([15, 17]),
+    content: '1'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([28, -3]),
+    content: '6'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([-12, 90]),
+    content: 'R2'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([-12, 115]),
+    content: '1 Meg'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([80, -15]),
+    content: 'C4'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([80, 20]),
+    content: '10 uf'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([122, 25]),
+    content: 'D1'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([135, 60]),
+    content: '1N4148'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([170, 12]),
+    content: 'D2'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([150, -15]),
+    content: '1N4148'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([200, 25]),
+    content: 'C3'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([213, 55]),
+    content: '0.1 uf'
+  }));
+  textGroup.addChild(new PointText({
+    point: c.add([275, 35]),
+    content: 'R5\n1 Meg'
+  }));
+
+  textGroup.style = {
+    fillColor: darkBlue,
+    fontFamily: 'Courier New',
+    fontSize: 10,
+    justification: 'center'
+  };
+
+  new PointText({
+    point: c.add([180, 110]),
+    content: 'C3 RC Delay Values:\n' +
+      '0.1 uf @ ~ 100 msecs\n' +
+      '470 nf @ ~ 0.5 secs\n' +
+      '2.2 uf @ ~ 2.2 secs\n' +
+      '5 uf @ ~ 5 secs\n',
+    fillColor: '#2CAAA9',
+    fontFamily: 'Courier New',
+    fontSize: 10
+  });
+
+  new PointText({
+    point: c.add([-50, 150]),
+    content: 'Notes:\n' +
+      'Voltage gain = R2/R1\n' +
+      '1 Meg / 1K = 1000  --- 60 db gain\n\n' +
+      'D1 & D2 forms a voltage doubler rectifier & peak detector\n' +
+      'R5 & C3 forms a RC delay for Arduino Analog input\n',
+    fillColor: '#0065B3',
+    fontFamily: 'Courier New',
+    fontSize: 10
+  });
 };
