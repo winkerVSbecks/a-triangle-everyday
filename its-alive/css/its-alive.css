@@ -12,7 +12,10 @@
   border: 1px solid currentColor;
   margin-right: 5px;
   cursor: pointer;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: sans-serif;
+  font-size: 10px;
+  text-transform: uppercase;
+  padding: 2px 0;
 }
 
 .btn:hover {
