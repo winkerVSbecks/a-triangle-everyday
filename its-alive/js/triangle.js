@@ -48,8 +48,8 @@ Triangle.prototype.getPoints = function() {
 
 Triangle.prototype.glow = function(t) {
   this.light.visible = true;
-  this.light.fillColor ='#FA0B41';
-  this.light.strokeColor ='#FA0B41';
+  this.light.fillColor = red;
+  this.light.strokeColor = red;
   this.path.strokeColor = '#000';
   // Pulsate
   var sinus = Math.sin(t * 3);

@@ -5,6 +5,7 @@ var lightBlue = '#00CCFF';
 var green = '#31BCBF';
 var purple = '#F4BFF2';
 var yellow = '#FFFF9C';
+var red = '#FA0B41';
 var triangle;
 var triangles = [];
 var wires = [];
@@ -13,10 +14,12 @@ var tags = [];
 var arrows = [];
 var doAnimate = false;
 var areGlowing = false;
+var hud;
 var t = 0;
 
 window.onload = function() {
   paper.setup('its-alive');
+
   // Background
   var background = new Path.Rectangle(view.bounds);
       background.fillColor = '#000';
@@ -24,6 +27,7 @@ window.onload = function() {
   buildCircuit();
   buildText();
   triangle.light.bringToFront();
+  hud = new Hud();
 
   paper.view.draw();
 
@@ -103,18 +107,6 @@ var glowBits = function() {
   };
 
   areGlowing = true;
-};
-
-
-// ---------------------------------------------------
-//  Handle Re-Size
-// ---------------------------------------------------
-window.onresize = function() {
-  var background = new Path.Rectangle(view.bounds);
-      background.fillColor = '#000';
-  buildCircuit();
-  buildText();
-  triangle.light.bringToFront();
 };
 
 
