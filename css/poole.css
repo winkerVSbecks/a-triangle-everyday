@@ -417,11 +417,15 @@ tbody tr:nth-child(odd) th {
   font-family: 'PT Sans Narrow', sans-serif;
   display: block;
   margin-bottom: .5rem;
-  line-height: 1.25;
-  font-size: 1.25rem;
+  line-height: 1.5;
+  font-size: 24px;
   margin-top: 0;
   font-weight: normal;
   text-rendering: optimizeLegibility;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .triangles-posts li a:hover {
   color: #FFCC33;
@@ -429,6 +433,19 @@ tbody tr:nth-child(odd) th {
 }
 .triangles-posts li a:hover small {
   color: #999;
+}
+.triangles-title {
+  margin-bottom: 3rem;
+}
+
+@media (min-width: 38em) {
+  .triangles-title {
+    margin-bottom: 0.5rem;
+  }
+  .triangles-posts li a {
+    line-height: 1.25;
+    font-size: 1.25rem;
+  }
 }
 
 
