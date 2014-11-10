@@ -9,7 +9,11 @@ var Hud = function() {
 
   var SQRT_3 = Math.pow(3, 0.5);
   var c = new Point(100, 75);
+  this.c = c;
+  this.rot = 0;
+  this.rotTarget = randomNumber(-15, 15);
 
+  this.group = new Group();
   this.buildZone(c);
 
   this.triangle = new Path({
@@ -22,13 +26,17 @@ var Hud = function() {
     fillColor: '#F4FFC5'
   });
 
+  this.group.addChild(this.triangle);
+
   this.buildDaytums(c);
   this.buildScale(c);
   this.buildTag(c);
+
+  this.group.opacity = 0;
 };
 
 Hud.prototype.buildTag = function(c) {
-  var text = new PointText({
+  this.tag = new PointText({
     point: [0, 0],
     content: 'RECEIVING ANALYTICS',
     fillColor: _blue,
@@ -44,17 +52,19 @@ Hud.prototype.buildTag = function(c) {
   });
 
   var group = new Group({
-    children: [text, rec],
+    children: [this.tag, rec],
     position: [c.x + 25, c.y - 50]
   });
 
-  var text = new PointText({
+  this.text = new PointText({
     point: [c.x, c.y - 18],
     content: '360º',
     fillColor: grey,
     fontSize: 7,
     justification: 'center'
   });
+
+  this.group.addChildren([group, this.text]);
 };
 
 Hud.prototype.buildZone = function(c) {
@@ -72,7 +82,7 @@ Hud.prototype.buildZone = function(c) {
     to: p2,
     strokeColor: grey
   });
-  var arc1 = new Path.Arc({
+  var arc2 = new Path.Arc({
     from: p3,
     through: [c.x - r, c.y],
     to: p4,
@@ -171,6 +181,12 @@ Hud.prototype.buildZone = function(c) {
     ],
     strokeColor: _red
   });
+
+  this.zone = new Group({
+    children: [arc1, arc2, l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, b1, b2]
+  });
+
+  this.group.addChild(this.zone);
 };
 
 Hud.prototype.buildDaytums = function(c) {
@@ -235,6 +251,8 @@ Hud.prototype.buildDaytums = function(c) {
     children: [d1, d2],
     strokeColor: _blue
   });
+
+  this.group.addChildren([this.daytums, circle, arc1, arc2, j1, j2]);
 };
 
 Hud.prototype.buildScale = function(c) {
@@ -256,10 +274,10 @@ Hud.prototype.buildScale = function(c) {
     strokeColor: grey
   });
 
-  var levels = [];
+  var levels = new Group();
 
   for (var i = 10; i >= 1; i--) {
-    levels.push(new Path({
+    levels.addChild(new Path({
       segments: [
         [c.x - 77, c.y + 50 - i * 3],
         [c.x - 80, c.y + 50 - i * 3]
@@ -273,4 +291,44 @@ Hud.prototype.buildScale = function(c) {
     size: [5, 20],
     fillColor: lightBlue
   });
+
+  this.group.addChildren([v1, v2, levels, rect]);
+};
+
+Hud.prototype.reset = function() {
+  this.group.opacity = 0;
+};
+
+Hud.prototype.draw = function(t) {
+  if (this.group.opacity < 1)
+    this.group.opacity += 0.05;
+
+  if (this.group.opacity >= 1) {
+
+    if (this.rot > this.rotTarget) {
+      this.zone.rotate(-1, this.c);
+      this.rot--;
+    } else {
+      this.zone.rotate(1, this.c);
+      this.rot++;
+    }
+
+    this.text.content = map(this.rot, -15, 15, 0, 360).toFixed(1) + 'º';
+
+    if (Math.abs(this.rot - this.rotTarget) < 1)
+      this.rotTarget = randomNumber(-15, 15);
+  }
+
+  if (t % 3 === 0)
+    this.daytums.opacity = this.daytums.opacity === 0 ? 1 : 0;
+  if (t % 24 === 0)
+    this.tag.opacity = this.tag.opacity === 0.5 ? 1 : 0.5;
+};
+
+var randomNumber = function (minimum, maximum) {
+  return Math.round(Math.random() * (maximum - minimum) + minimum);
+};
+
+var map = function (n, start1, stop1, start2, stop2) {
+  return (n - start1) / (stop1 - start1) * (stop2 - start2) + start2;
 };

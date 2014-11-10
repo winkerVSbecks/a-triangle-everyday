@@ -27,4 +27,7 @@ AnimatedLine.prototype.draw = function() {
   this.now = this.now.add(delta.divide(this.decc));
 
   this.path.segments[1].point = this.now;
+
+  if (this.v.subtract(this.now).length < 0.01)
+    this.now = this.u;
 };

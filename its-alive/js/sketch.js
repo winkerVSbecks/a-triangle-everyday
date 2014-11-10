@@ -6,7 +6,7 @@ var green = '#31BCBF';
 var purple = '#F4BFF2';
 var yellow = '#FFFF9C';
 var red = '#FA0B41';
-var triangle;
+var triangle, hud, dots, levels;
 var triangles = [];
 var wires = [];
 var bits = [];
@@ -14,8 +14,8 @@ var tags = [];
 var arrows = [];
 var doAnimate = false;
 var areGlowing = false;
-var hud;
 var t = 0;
+var _t = 0;
 
 window.onload = function() {
   paper.setup('its-alive');
@@ -28,6 +28,8 @@ window.onload = function() {
   buildText();
   triangle.light.bringToFront();
   hud = new Hud();
+  dots = new Dots(new Point(view.size.width - 60, 20));
+  levels = new Levels(new Point(view.size.width - 100, view.size.height - 40));
 
   paper.view.draw();
 
@@ -47,7 +49,14 @@ window.onload = function() {
         arrows[i].live.draw();
       };
 
+      dots.draw(_t);
+      levels.draw(t);
+      hud.draw(_t);
+
+      _t++;
       t += 0.016666667;
+    } else {
+      dots.draw(_t, true);
     }
   };
 };
@@ -85,8 +94,11 @@ var reset = function() {
   };
 
   triangle.stopGlow();
+  levels.group.opacity = 0;
+  hud.reset();
 
   t = 0;
+  _t = 0;
 };
 
 var glowBits = function() {
